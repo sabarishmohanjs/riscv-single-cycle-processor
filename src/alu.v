@@ -42,10 +42,10 @@ module alu(
         5'b01001:ALUResult=($signed(SrcA)<$signed(SrcB))?32'b01:32'b0;//slt
         5'b01010:ALUResult=SrcA<<SrcB[5:0];//slli
         5'b01011:ALUResult=SrcA>>SrcB[5:0];//srli
-        5'b01100:ALUResult=$signed(SrcA)>>>SrcB[5:0];//srai
+        5'b01100:ALUResult=$signed(SrcA)>>>SrcB[4:0];//srai
         5'b01101:ALUResult=((SrcA-SrcB)==0)?1'b1:1'b0;//bne
-        5'b01110:ALUResult=(SrcA<SrcB)?1'b0:1'b1;//blt,bltu
-        5'b01111:ALUResult=(SrcA>=SrcB)?1'b0:1'b1;//bge,bgeu
+        5'b01110:ALUResult=($signed(SrcA)<$signed(SrcB))?32'b0:32'b1;//blt,bltu
+        5'b01111:ALUResult=($signed(SrcA)>=$signed(SrcB))?32'b0:32'b1;//bge,bgeu
         5'b10000:ALUResult=SrcB;
         default:
             ALUResult=32'b0;

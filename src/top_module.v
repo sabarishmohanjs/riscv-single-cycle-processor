@@ -70,6 +70,10 @@ module top_module(input clk,rst);
     wire [31:0]PCSrcA;
     wire PCALUSrc;
     wire [31:0]SrcA;
+    wire [1:0] StoreSRC;
+    wire [31:0] WD;
+    wire [2:0]LoadSRC;
+    wire[31:0]Result;
     PCMux u_PCMux(
      .PCTarget(PCTarget),
      .PCPlus4(mux_plus4),
@@ -130,12 +134,14 @@ module top_module(input clk,rst);
     .ALUResult(ALUResult)
     );
     
+     mux_store u_mux_store(.RD2(RD2),.StoreSRC(StoreSRC),.WriteData(WD));
+    mux_load u_mux_load(.Result(Result),.LoadSRC(LoadSRC),.WD3(WD3));
     data_mem u_data_mem(
     .clk(clk),
     .rst(rst),
     .WE(MemWrite),
     .A(ALUResult),
-    .WD(RD2),
+    .WD(WD),
     .RD(ReadData)
     );
  
@@ -145,7 +151,7 @@ module top_module(input clk,rst);
     .ALUResult(ALUResult),
     .ReadData(ReadData),
     .PCPlus4(mux_plus4),
-    .Result(WD3)//wire
+    .Result(Result)//wire
     );
     
      pc_target u_PC_target(
@@ -186,7 +192,9 @@ module top_module(input clk,rst);
    // .ALUOp(ALUOp),//wire no use of the aluop as we changed the complete code of the alu decoder
     .Jump(Jump),
     .PCTargetSrc(PCTargetSrc),
-    .PCALUSrc(PCALUSrc)
+    .PCALUSrc(PCALUSrc),
+    .StoreSRC(StoreSRC),
+    .LoadSRC(LoadSRC)
     );
     
     reg_to_pctarget u_reg_to_pctarget( 

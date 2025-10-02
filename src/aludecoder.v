@@ -36,7 +36,9 @@ module aludecoder(
    // output reg [1:0] ALUOp,
     output reg Jump,
     output reg PCALUSrc,
-    output reg [4:0] ALUControl
+    output reg [4:0] ALUControl,
+    output reg [1:0]StoreSRC,
+    output reg [2:0] LoadSRC
     );
     reg Branch;
     assign PCSrc=(Branch&Zero)|Jump;
@@ -55,6 +57,8 @@ module aludecoder(
             Jump=1'b0;
             PCTargetSrc=1'b0;
             PCALUSrc=1'b0;
+            StoreSRC=2'b00;
+            LoadSRC=3'b010;
                 if(funct3 == 3'b000 && funct7 == 7'b0000000) 
                      ALUControl<= 5'b0000; //ADD 
                 else if(funct3 == 3'b000 && funct7 == 7'b0100000) 
@@ -93,6 +97,8 @@ module aludecoder(
             Jump=1'b0;
             PCTargetSrc=1'b0;
             PCALUSrc=1'b0;
+            StoreSRC=2'b00;
+            LoadSRC=3'b010;
                if(funct3 == 3'b000) 
                     ALUControl <= 5'b0000; //ADDI 
                else if(funct3 == 3'b100)
@@ -105,8 +111,8 @@ module aludecoder(
                     ALUControl <= 5'b1010; //SLLI 
                else if(funct3 == 3'b101 && funct7 == 7'b0000000)
                     ALUControl <= 5'b1011; //SRLI
-               else if(funct3 == 3'b101 && funct7 == 7'b0010000)
-                    ALUControl <= 5'b1100; //SRAI 
+               else if(funct3 == 3'b101 && funct7 == 7'b0100000)
+                    ALUControl <= 5'b01100; //SRAI 
                else if(funct3 == 3'b010)
                     ALUControl <=5'b1001; //SLTI 
                else if(funct3 == 3'b011)
@@ -127,6 +133,18 @@ module aludecoder(
             Jump=1'b0;
             PCTargetSrc=1'b0;
             PCALUSrc=1'b0;
+              StoreSRC=2'b00;
+               //LoadSRC=3'b010;
+              if(funct3==000)
+                LoadSRC=3'b00;
+              else  if(funct3==3'b001)
+                LoadSRC=3'd1;
+              else  if(funct3==3'b010)
+                LoadSRC=3'd2;
+              else  if(funct3==3'b011)
+                LoadSRC=3'd3;
+              else  if(funct3==3'b100)
+                LoadSRC=3'd4;
          end
                 
          /*
@@ -160,6 +178,14 @@ module aludecoder(
                 PCTargetSrc=1'b0;
                 PCALUSrc=1'b0;
                 ALUControl <= 5'b0000;//store
+                 LoadSRC=3'b010;
+                
+                if(funct3==0)
+                      StoreSRC=2'b00;// SB
+                else if(funct3==1)
+                      StoreSRC=2'b01; //SH
+                else if(funct3==2)
+                      StoreSRC=2'b10;  //SW
             end
                      
             /*
@@ -186,6 +212,8 @@ module aludecoder(
             Jump=1'b0;
             PCTargetSrc=1'b0;
             PCALUSrc=1'b0;
+             LoadSRC=3'b010;
+              StoreSRC=2'b00;
                 if(funct3 == 3'b000) 
                     ALUControl <= 5'b00001; //BEQ
                else if(funct3 == 3'b001)
@@ -214,6 +242,8 @@ module aludecoder(
                 PCTargetSrc=1'b0;
                 PCALUSrc=1'b0;
                 ALUControl<=5'b10000;
+                 LoadSRC=3'b010;
+                  StoreSRC=2'b00;
             end
             7'b0010111:// u type auipc
             begin
@@ -228,6 +258,8 @@ module aludecoder(
                 PCTargetSrc=1'b0;
                 PCALUSrc=1'b1;
                 ALUControl<=5'b00000;
+                  StoreSRC=2'b00;
+                   LoadSRC=3'b010;
             end
             
         7'b1101111://jump
@@ -243,6 +275,8 @@ module aludecoder(
             PCTargetSrc=1'b0;
             PCALUSrc=1'b0;
             ALUControl<=5'b00000;//temporary
+              StoreSRC=2'b00;
+               LoadSRC=3'b010;
         end
         
         7'b1100111://jump(jalr)
@@ -258,6 +292,8 @@ module aludecoder(
             PCTargetSrc=1'b1;
             PCALUSrc=1'b0;
             ALUControl<=5'b00000;//temporary
+              StoreSRC=2'b00;
+               LoadSRC=3'b010;
         end
             default:
             begin
@@ -272,6 +308,8 @@ module aludecoder(
                 PCTargetSrc=1'b0;
                 PCALUSrc=1'b0;
                 ALUControl<=5'bxxxxx;
+                  StoreSRC=2'b00;
+                   LoadSRC=3'b010;
             end 
         endcase
     end

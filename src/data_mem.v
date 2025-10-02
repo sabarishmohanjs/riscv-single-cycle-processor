@@ -28,7 +28,7 @@ module data_mem(
     input [31:0] WD,
     output reg [31:0] RD
     );
-    reg [31:0] datamem [0:63];
+    reg [127:0] datamem [0:127];
     always@(*)begin
        // if(!WE)
             RD=datamem[A];
@@ -60,14 +60,17 @@ module data_mem(
 //          end  
 //    end
 //    else
+
         if(WE)begin
             datamem[A]<=WD;
             
             //$writememh("data_mem.mem",datamem);
         end     
+        $display("datamem=%0d",datamem[A]);
     end
-    /*always@(posedge clk)begin
-    $display("datamem=%0d",datamem[16]);
-    end
-    */
+    
+    //always@(posedge clk)begin
+    
+    //end 
+    
 endmodule

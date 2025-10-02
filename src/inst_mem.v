@@ -24,14 +24,15 @@ module inst_mem(
 input [31:0] A,
 output [31:0] RD
     );
-    reg [31:0] instr [31:0];
+    reg [1024:0] instr [1024:0];
     initial
     begin
         $readmemh("instruction_memory.mem",instr);
     end
    
     
-     assign RD=instr[A[6:2]];
+     //assign RD=instr[A[6:2]];
+     assign RD = instr[A[8:2]];
     //always@(*)
     /*
     initial
