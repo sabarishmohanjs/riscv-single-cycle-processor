@@ -42,7 +42,12 @@ A simple RISC-V assembly program is included that computes the sum of the first 
 - `Report.pdf` – Detailed design and implementation report.
 
 ---
+## 👥 Contributors
+- Hemanth S (https://github.com/hemanth028)
+- Naveen Kumar B (https://github.com/naveen20306)
+- Sabarish Mohan JS (https://github.com/sabarishmohanjs)
 
+---
 ## 💡 Future Improvements
 
 - Implement pipelining to improve performance by overlapping instruction execution stages.
